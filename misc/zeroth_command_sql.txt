@@ -1,0 +1,40 @@
+-- Creates the user table
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password_hash VARCHAR(100) NOT NULL,
+  currency_balance DECIMAL(12, 2) NOT NULL DEFAULT 100.00,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Creates the transactions table
+CREATE TABLE transactions (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  delta DECIMAL(12, 2) NOT NULL, -- The change (+50 or -20)
+  final_updated_value DECIMAL(12, 2) NOT NULL, -- The new balance
+  source VARCHAR(100) NOT NULL, -- e.g., 'coinflip-bet', 'coinflip-win', 'refill'
+  
+  -- This links the transaction to a user
+  CONSTRAINT fk_user
+    FOREIGN KEY(user_id) 
+    REFERENCES users(id)
+    ON DELETE CASCADE -- If a user is deleted, delete their transactions
+);
+
+-- Creates a table for game states (for modularity)
+CREATE TABLE game_states (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL UNIQUE, -- Only one active game state per user
+  game_type VARCHAR(50) NOT NULL, -- e.g., 'poker', 'blackjack'
+  state_data JSONB NOT NULL, -- Store game data as flexible JSON
+  
+  CONSTRAINT fk_user_game
+    FOREIGN KEY(user_id) 
+    REFERENCES users(id)
+    ON DELETE CASCADE
+);
+
+-- Add an index for faster lookups of transactions by user
+CREATE INDEX idx_transactions_user_id ON transactions(user_id);
