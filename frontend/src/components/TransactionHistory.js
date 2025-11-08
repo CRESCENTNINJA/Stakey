@@ -5,7 +5,7 @@ import axios from 'axios';
 const getAuthApi = () => {
   const token = localStorage.getItem('token');
   return axios.create({
-    baseURL: 'http://localhost:5000',
+    baseURL: process.env.REACT_APP_API_URL ,
     headers: { 'x-auth-token': token }
   });
 };

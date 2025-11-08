@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // We define our API URL here. 
 // This must match the port in your backend's server.js
-const API_URL = 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL; 
 
 export default function Auth({ onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);

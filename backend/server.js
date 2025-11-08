@@ -11,7 +11,7 @@ const app = express();
 // --- Middleware ---
 // Allow requests from our frontend (running on localhost:3000)
 app.use(cors({
-  origin: 'http://localhost:3000' 
+  origin: process.env.FRONTEND_URL 
 }));
 // Allow our server to read JSON data from requests
 app.use(express.json());
